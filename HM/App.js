@@ -1,33 +1,50 @@
-import React, { useRef, useState } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber/native'
+import * as React from 'react'
+import MainContainer from './Pages/Navigation/mainContainer'
 
-function Box(props) {
-  const meshRef = useRef(null)
-  const [hovered, setHover] = useState(false)
-  const [active, setActive] = useState(false)
-  useFrame((state, delta) => (meshRef.current.rotation.x += delta))
-  return (
-    <mesh
-      {...props}
-      ref={meshRef}
-      scale={active ? 1.5 : 1}
-      onClick={(event) => setActive(!active)}
-      onPointerOver={(event) => setHover(true)}
-      onPointerOut={(event) => setHover(false)}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
-    </mesh>
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/Ionicons'; 
+
+
+import ThreeApp from './Pages/Navigation/Views/PetScreen'
+import HomeScreen from './Pages/Navigation/Views/HabitScreen';
+
+const homeName = 'Home';
+const threeName = '3d';
+
+const tab = createBottomTabNavigator();
+
+function App(){
+  return(
+    <NavigationContainer>
+      <tab.Navigator
+      initialRouteName={homeName}
+      screenOptions={({route})=>({
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName;
+          let rn = route.name;
+
+          if (rn === homeName)
+          {
+            iconName = focused ? 'home' : 'home-outline'
+          }
+          else
+          {
+            iconName = focused ? 'home' : 'home-outline'
+          }
+
+          return <Icon name={iconName} size={size} color={color}/>
+        }
+      })}
+      
+      >
+
+        <tab.Screen name={homeName} component={HomeScreen}/>
+        <tab.Screen name={threeName} component={ThreeApp}/>
+
+      </tab.Navigator>
+    </NavigationContainer>
   )
 }
 
-export default function App() {
-  return (
-    <Canvas>
-      <ambientLight intensity={Math.PI / 2} />
-      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} decay={0} intensity={Math.PI} />
-      <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
-      <Box position={[-1.2, 0, 0]} />
-      <Box position={[1.2, 0, 0]} />
-    </Canvas>
-  )
-}
+export default App;
