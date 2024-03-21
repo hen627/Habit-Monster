@@ -5,8 +5,6 @@ import { SpotLightShadow } from "three";
 
 interface BoxProps extends MeshProps {
   position: [number, number, number];
-  receiveShadow: boolean;
-  castShadow: boolean;
 }
 
 function Box(props: BoxProps) {
@@ -44,7 +42,7 @@ export default function ThreeApp() {
         castShadow
       />
       <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
-      <Box castShadow={true} position={[-1.2, 0, 0]} />
+      <Box position={[-1.2, 0, 0]} />
       <Box position={[1.2, 0, 0]} />
     </Canvas>
   );

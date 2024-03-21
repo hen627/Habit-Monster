@@ -28,7 +28,7 @@ function App(){
           {
             iconName = focused ? 'home' : 'home-outline'
           }
-          else
+          else //this part needs to be changed
           {
             iconName = focused ? 'home' : 'home-outline'
           }
