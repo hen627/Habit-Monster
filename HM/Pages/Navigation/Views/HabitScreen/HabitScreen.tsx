@@ -50,7 +50,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   };
 
   const createTask = async () => {
-    // Check if taskName is empty
     if (!taskName.trim()) {
       console.error("Task name cannot be empty");
       return;
@@ -61,7 +60,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       .map((day) => day.name);
 
     const taskData = {
-      id: uuid.v4(), // Generate unique identifier
+      id: uuid.v4(),
       taskName,
       selectedDays,
     };
@@ -72,7 +71,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         ? JSON.parse(savedHabitsString)
         : [];
 
-      // Save each habit as an object containing task ID, name, and selected days
       const updatedHabits = [
         ...currentHabits,
         {
@@ -85,10 +83,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       await AsyncStorage.setItem("habits", JSON.stringify(updatedHabits));
       console.log("Habits updated successfully:", updatedHabits);
 
-      // Update the habits state after successfully saving the new task
       setHabits(updatedHabits.map((habit) => habit.taskName));
 
-      // Fetch updated habits
       fetchHabits();
     } catch (error) {
       console.error("Error saving task", error);
@@ -106,14 +102,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         const savedHabits = JSON.parse(savedHabitsString);
         console.log("Parsed habits from AsyncStorage:", savedHabits);
 
-        // Initialize selectedDaysForHabit with selected days for each habit
         const selectedDaysForHabitData = {};
         savedHabits.forEach((habit) => {
           selectedDaysForHabitData[habit.taskName] = habit.selectedDays;
         });
         setSelectedDaysForHabit(selectedDaysForHabitData);
 
-        // Directly set the habit names from savedHabits
         const habitNames = savedHabits.map((habit) => habit.taskName);
         setHabits(habitNames);
       } else {
@@ -146,37 +140,40 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     };
 
     fetchData();
-    fetchHabits(); // Fetch habits on initial load
+    fetchHabits();
   }, []);
 
   const [selectedDaysForHabit, setSelectedDaysForHabit] = React.useState({});
+  const [checkedInDays, setCheckedInDays] = React.useState<{
+    [key: string]: string[];
+  }>({});
 
-  const handleCheckIn = (habit, day) => {
-    setSelectedDaysForHabit((prevSelectedDays) => {
-      const updatedSelectedDays = { ...prevSelectedDays };
-      if (!updatedSelectedDays[habit]) {
-        updatedSelectedDays[habit] = [day];
+  const handleCheckIn = (habit: string, day: string) => {
+    setCheckedInDays((prevCheckedInDays) => {
+      const updatedCheckedInDays = { ...prevCheckedInDays };
+      if (!updatedCheckedInDays[habit]) {
+        updatedCheckedInDays[habit] = [day];
       } else {
-        if (updatedSelectedDays[habit].includes(day)) {
-          updatedSelectedDays[habit] = updatedSelectedDays[habit].filter(
+        if (updatedCheckedInDays[habit].includes(day)) {
+          updatedCheckedInDays[habit] = updatedCheckedInDays[habit].filter(
             (d) => d !== day
           );
         } else {
-          updatedSelectedDays[habit] = [...updatedSelectedDays[habit], day];
+          updatedCheckedInDays[habit] = [...updatedCheckedInDays[habit], day];
         }
       }
-      return updatedSelectedDays;
+      return updatedCheckedInDays;
     });
   };
 
   const handleRemoveHabit = async (habit) => {
     try {
-      const updatedHabits = [...habits]; // Make a copy of the habits array
-      const habitIndex = updatedHabits.findIndex((h) => h === habit); // Find the index of the habit to remove
+      const updatedHabits = [...habits];
+      const habitIndex = updatedHabits.findIndex((h) => h === habit);
       if (habitIndex !== -1) {
-        updatedHabits.splice(habitIndex, 1); // Remove the habit from the array
-        await AsyncStorage.setItem("habits", JSON.stringify(updatedHabits)); // Update AsyncStorage with the modified array
-        setHabits(updatedHabits); // Update the habits state with the modified array
+        updatedHabits.splice(habitIndex, 1);
+        await AsyncStorage.setItem("habits", JSON.stringify(updatedHabits));
+        setHabits(updatedHabits);
         const updatedSelectedDays = { ...selectedDaysForHabit };
         delete updatedSelectedDays[habit];
         setSelectedDaysForHabit(updatedSelectedDays);
@@ -197,50 +194,58 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           setModalVisible(false);
         }}
       >
-        <View style={modalViewStyles.centeredView}>
-          <View style={modalViewStyles.modalView}>
-            <View style={{ width: "80%", alignContent: "center" }}>
-              <TextInput
-                style={modalViewStyles.modalText}
-                onChangeText={setTaskName}
-                placeholder="Enter task name"
-              />
+        <TouchableOpacity
+          style={styles.overlay}
+          activeOpacity={1}
+          onPress={() => setModalVisible(false)}
+        >
+          <View style={modalViewStyles.centeredView}>
+            <View style={modalViewStyles.modalView}>
+              <View style={{ width: "80%", alignContent: "center" }}>
+                <TextInput
+                  style={modalViewStyles.modalText}
+                  onChangeText={setTaskName}
+                  placeholder="Enter task name"
+                />
+              </View>
+              <Text style={modalViewStyles.dueDays}>Due days: </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignContent: "center",
+                }}
+              >
+                {dayList.map((day) => (
+                  <TouchableOpacity
+                    key={day.id}
+                    style={{
+                      backgroundColor: day.isSelected ? "#5669FF" : "darkgray",
+                      padding: 10,
+                      width: "10%",
+                      alignItems: "center",
+                      borderRadius: 5,
+                      margin: 5,
+                    }}
+                    onPress={() => handlePress(day.id)}
+                  >
+                    <Text style={{ color: "white" }}>{day.name.charAt(0)}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <TouchableOpacity
+                style={[modalViewStyles.button, modalViewStyles.buttonClose]}
+                onPress={createTask}
+              >
+                <Text style={modalViewStyles.textStyle}>Create task</Text>
+              </TouchableOpacity>
             </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignContent: "center",
-              }}
-            >
-              <Text style={{ color: "white" }}>Due days: </Text>
-              {dayList.map((day) => (
-                <TouchableOpacity
-                  key={day.id}
-                  style={{
-                    backgroundColor: day.isSelected ? "#5669FF" : "#E2E2E2",
-                    padding: 10,
-                    borderRadius: 5,
-                    margin: 5,
-                  }}
-                  onPress={() => handlePress(day.id)}
-                >
-                  <Text style={{ color: "white" }}>{day.name.charAt(0)}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <TouchableOpacity
-              style={[modalViewStyles.button, modalViewStyles.buttonClose]}
-              onPress={createTask}
-            >
-              <Text style={modalViewStyles.textStyle}>Create task</Text>
-            </TouchableOpacity>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
-
       <Text style={{ fontSize: 26, fontWeight: "bold", color: "white" }}>
         Habits
       </Text>
+
       <FlatList
         data={habits}
         renderItem={({ item }) => (
@@ -273,14 +278,20 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                       selectedDaysForHabit[item] &&
                       selectedDaysForHabit[item].includes(day.name)
                         ? styles.dayButtonTextSelected
-                        : styles.dayButtonTextDisabled,
+                        : selectedDaysForHabit[item] &&
+                          !selectedDaysForHabit[item].includes(day.name)
+                        ? styles.dayButtonTextDisabled
+                        : null,
+                      checkedInDays[item] &&
+                      checkedInDays[item].includes(day.name)
+                        ? styles.dayButtonTextCheckedIn
+                        : null,
                     ]}
                     onPress={() => {
                       console.log(
                         "selectedDaysForHabit[item]: ",
                         selectedDaysForHabit[item]
                       );
-                      console.log("day.name: ", day.name);
                     }}
                   >
                     {day.name.charAt(0)}
@@ -322,6 +333,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "space-between",
     backgroundColor: "black",
+    padding: 10,
   },
   buttonView: {
     width: "6%",
@@ -338,7 +350,7 @@ const styles = StyleSheet.create({
   },
   habitText: {
     color: "white",
-    fontSize: 16,
+    fontSize: 15,
   },
   buttonsContainer: {
     flexDirection: "row",
@@ -355,10 +367,16 @@ const styles = StyleSheet.create({
     color: "white",
   },
   dayButtonTextSelected: {
-    color: "cyan",
+    color: "red",
   },
   dayButtonTextDisabled: {
     color: "gray", // Gray text for unselected days
+  },
+  dayButtonTextCheckedIn: {
+    color: "lightgreen", // Adjust the color as needed
+  },
+  dayButtonTextUnchecked: {
+    backgroundColor: "transparent",
   },
   checkInButton: {
     backgroundColor: "green",
@@ -378,6 +396,10 @@ const styles = StyleSheet.create({
   removeButtonText: {
     color: "white",
   },
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.98)",
+  },
 });
 
 const modalViewStyles = StyleSheet.create({
@@ -385,12 +407,11 @@ const modalViewStyles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
   },
   modalView: {
     flexDirection: "column",
     justifyContent: "center",
-    backgroundColor: "black",
+    backgroundColor: "rgba(0, 0, 0, 0)",
     borderRadius: 20,
     alignItems: "center",
     shadowColor: "#000",
@@ -399,7 +420,8 @@ const modalViewStyles = StyleSheet.create({
       height: 2,
     },
     width: "100%",
-    height: "20%",
+    height: "30%",
+    padding: 5,
   },
   button: {
     borderRadius: 20,
@@ -420,8 +442,14 @@ const modalViewStyles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
+    width: "100%",
     textAlign: "center",
     backgroundColor: "gray",
+    borderRadius: 4,
+  },
+  dueDays: {
+    paddingBottom: 10,
+    color: "white",
   },
 });
 
