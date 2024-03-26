@@ -50,12 +50,13 @@ export default function Slime(props: SphereProps) {
   const animateJump = () => {
     if (!meshRef.current) return;
     const jumpStartTime = performance.now();
-    const jumpDuration = 1500;
+    const jumpDuration = 1000;
     const startY = meshRef.current.position.y;
     const targetY = initialPosition.current[1];
 
     const startPosition = meshRef.current.position.clone();
     const targetX = startPosition.x + (Math.random() - 0.5) * 2;
+    const targetZ = startPosition.z + (Math.random() - 0.5) * 0.2; // Adjust the range as needed
 
     const jumpAnimation = (timestamp: number) => {
       const elapsedTime = timestamp - jumpStartTime;
@@ -63,19 +64,13 @@ export default function Slime(props: SphereProps) {
 
       const newPosition = startPosition
         .clone()
-        .lerp(
-          new THREE.Vector3(targetX, targetY, startPosition.z),
-          jumpProgress
-        );
+        .lerp(new THREE.Vector3(targetX, targetY, targetZ), jumpProgress);
       meshRef.current.position.copy(newPosition);
 
       if (meshRef.current.position) {
         meshRef.current.position.y =
           Math.sin(jumpProgress * Math.PI) * 0.5 + startY;
       }
-
-      meshRef.current.position.z +=
-        (Math.random() - 0.5) * 0.1 * (1 - jumpProgress);
 
       if (jumpProgress < 1) {
         requestAnimationFrame(jumpAnimation);
