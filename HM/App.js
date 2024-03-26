@@ -10,7 +10,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 
-import ThreeApp from './Pages/Navigation/Views/PetScreen'
+import ThreeApp from './Pages/Navigation/Views/PetScreen/PetScreen';
 import HomeScreen from './Pages/Navigation/Views/HabitScreen/HabitScreen';
 
 const Tab = createMaterialBottomTabNavigator();
