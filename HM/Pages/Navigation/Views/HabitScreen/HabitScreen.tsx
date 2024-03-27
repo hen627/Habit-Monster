@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   Button,
-  StyleSheet,
   Modal,
   Alert,
   TextInput,
@@ -64,6 +63,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       id: uuid.v4(),
       taskName,
       selectedDays,
+      color: "#" + Math.floor(Math.random() * 16777215).toString(16),
     };
 
     try {
@@ -78,11 +78,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           id: taskData.id,
           taskName: taskData.taskName,
           selectedDays: taskData.selectedDays,
+          color: taskData.color,
         },
       ];
 
       await AsyncStorage.setItem("habits", JSON.stringify(updatedHabits));
-      console.log("Habits updated successfully:", updatedHabits);
+      // console.log("Habits updated successfully:", updatedHabits);
 
       setHabits(updatedHabits.map((habit) => habit.taskName));
 
@@ -97,11 +98,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const fetchHabits = async () => {
     try {
       const savedHabitsString = await AsyncStorage.getItem("habits");
-      console.log("Saved habits from AsyncStorage:", savedHabitsString);
+      // console.log("Saved habits from AsyncStorage:", savedHabitsString);
 
       if (savedHabitsString !== null) {
         const savedHabits = JSON.parse(savedHabitsString);
-        console.log("Parsed habits from AsyncStorage:", savedHabits);
+        // console.log("Parsed habits from AsyncStorage:", savedHabits);
 
         const selectedDaysForHabitData = {};
         savedHabits.forEach((habit) => {
@@ -112,7 +113,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         const habitNames = savedHabits.map((habit) => habit.taskName);
         setHabits(habitNames);
       } else {
-        console.log("No habits found in AsyncStorage");
+        // console.log("No habits found in AsyncStorage");
         setHabits([]);
       }
     } catch (error) {
@@ -243,7 +244,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           </View>
         </TouchableOpacity>
       </Modal>
-      <Text style={{ fontSize: 26, fontWeight: "bold", color: "white" }}>
+      <Text
+        style={{
+          fontSize: 26,
+          fontWeight: "bold",
+          color: modalVisible ? "black" : "white", // Change color based on modal visibility
+        }}
+      >
         Habits
       </Text>
 
@@ -299,6 +306,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   </Text>
                 </TouchableOpacity>
               ))}
+            </View>
+            <View style={styles.habitButtons}>
               <TouchableOpacity
                 style={styles.checkInButton}
                 onPress={() => handleCheckIn(item, currentDay)}
