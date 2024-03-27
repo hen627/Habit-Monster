@@ -32,6 +32,7 @@
     "react-native-uuid": "^2.0.2",
     "react-native-vector-icons": "^10.0.3",
     "react-native-web": "~0.19.6",
+    "react-spring": "^9.7.3",
     "three": "^0.162.0",
     "typescript": "^5.3.0"
   },

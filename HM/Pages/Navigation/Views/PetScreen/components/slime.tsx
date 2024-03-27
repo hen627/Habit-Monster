@@ -18,12 +18,12 @@ export default function Slime(props: SphereProps) {
   let t = 0;
 
   const initialPosition = useRef<[number, number, number]>(props.position);
-  const jumpDirection = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, 1)); // Default jump direction is forward
+  const jumpDirection = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, 1));
 
   const calculateJumpDirection = () => {
     const startPosition = meshRef.current.position.clone();
     const targetX = startPosition.x + (Math.random() - 0.5) * 2;
-    const targetZ = startPosition.z + (Math.random() - 0.5) * 0.2; // Adjust the range as needed
+    const targetZ = startPosition.z + (Math.random() - 0.5) * 0.2;
 
     jumpDirection.current
       .set(targetX - startPosition.x, 0, targetZ - startPosition.z)
@@ -37,7 +37,7 @@ export default function Slime(props: SphereProps) {
   useFrame(() => {
     if (meshRef.current) {
       if (!jumping && Math.random() < 0.005) {
-        calculateJumpDirection(); // Calculate jump direction before starting the jump
+        calculateJumpDirection();
         setJumping(true);
         animateJump();
       }
@@ -73,7 +73,7 @@ export default function Slime(props: SphereProps) {
 
     const startPosition = meshRef.current.position.clone();
     const targetX = startPosition.x + (Math.random() - 0.5) * 2;
-    const targetZ = startPosition.z + (Math.random() - 0.5) * 0.2; // Adjust the range as needed
+    const targetZ = startPosition.z + (Math.random() - 0.5) * 0.2;
 
     const jumpAnimation = (timestamp: number) => {
       const elapsedTime = timestamp - jumpStartTime;
