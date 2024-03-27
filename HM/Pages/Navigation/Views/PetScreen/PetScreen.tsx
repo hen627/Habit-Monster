@@ -56,7 +56,11 @@ export default function ThreeApp() {
         {habits.map((habit, index) => (
           <Slime
             key={index}
-            position={[4 * (index + 1), -0.7, 2]}
+            position={[
+              Math.floor(Math.random() * 21) - 10,
+              -0.7,
+              Math.floor(Math.random() * 21) - 10,
+            ]}
             color={`${habit.color}`}
           />
         ))}
