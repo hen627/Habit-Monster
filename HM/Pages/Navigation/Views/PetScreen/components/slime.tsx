@@ -6,6 +6,7 @@ import * as THREE from "three";
 
 interface SphereProps extends MeshProps {
   position: [number, number, number];
+  color: string;
 }
 
 export default function Slime(props: SphereProps) {
@@ -17,10 +18,26 @@ export default function Slime(props: SphereProps) {
   let t = 0;
 
   const initialPosition = useRef<[number, number, number]>(props.position);
+  const jumpDirection = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, 1)); // Default jump direction is forward
+
+  const calculateJumpDirection = () => {
+    const startPosition = meshRef.current.position.clone();
+    const targetX = startPosition.x + (Math.random() - 0.5) * 2;
+    const targetZ = startPosition.z + (Math.random() - 0.5) * 0.2; // Adjust the range as needed
+
+    jumpDirection.current
+      .set(targetX - startPosition.x, 0, targetZ - startPosition.z)
+      .normalize();
+    meshRef.current.rotation.y = Math.atan2(
+      jumpDirection.current.x,
+      jumpDirection.current.z
+    );
+  };
 
   useFrame(() => {
     if (meshRef.current) {
       if (!jumping && Math.random() < 0.005) {
+        calculateJumpDirection(); // Calculate jump direction before starting the jump
         setJumping(true);
         animateJump();
       }
@@ -86,7 +103,15 @@ export default function Slime(props: SphereProps) {
   return (
     <mesh {...props} ref={meshRef}>
       <sphereGeometry args={[0.5, 32, 32]} />
-      <meshStandardMaterial color={"orange"} />
+      <meshStandardMaterial color={props.color} />
+      <mesh position={[0.2, 0.3, 0.2]}>
+        <sphereGeometry args={[0.1, 16, 16]} />
+        <meshStandardMaterial color={"black"} />
+      </mesh>
+      <mesh position={[-0.2, 0.3, 0.2]}>
+        <sphereGeometry args={[0.1, 16, 16]} />
+        <meshStandardMaterial color={"black"} />
+      </mesh>
     </mesh>
   );
 }

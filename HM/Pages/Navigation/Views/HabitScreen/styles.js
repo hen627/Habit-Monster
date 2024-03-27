@@ -8,19 +8,24 @@ export const styles = StyleSheet.create({
       justifyContent: "space-between",
       backgroundColor: "black",
       padding: 10,
+      width: "100%",
     },
     buttonView: {
-      width: "6%",
+      width: 30,
       justifyContent: "flex-end",
-      paddingBottom: 20,
+      paddingBottom: 10,
+
     },
     habitContainer: {
-      flexDirection: "row",
+      width: 300,
+      flex: 1,
       alignItems: "center",
-      justifyContent: "space-between",
-      borderBottomWidth: 1,
-      borderColor: "gray",
-      paddingVertical: 10,
+      justifyContent: "center",
+      backgroundColor: "#141414",
+      padding: 10,
+      borderRadius: 15,
+      marginTop: 10,
+
     },
     habitText: {
       color: "white",
@@ -44,10 +49,10 @@ export const styles = StyleSheet.create({
       color: "red",
     },
     dayButtonTextDisabled: {
-      color: "gray", // Gray text for unselected days
+      color: "gray", 
     },
     dayButtonTextCheckedIn: {
-      color: "lightgreen", // Adjust the color as needed
+      color: "green", 
     },
     dayButtonTextUnchecked: {
       backgroundColor: "transparent",
@@ -74,8 +79,12 @@ export const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: "rgba(0, 0, 0, 0.98)",
     },
+    habitButtons:{
+      flexDirection: "row",
+    }
   });
-  
+
+
   export const modalViewStyles = StyleSheet.create({
     centeredView: {
       flex: 1,
@@ -88,20 +97,13 @@ export const styles = StyleSheet.create({
       backgroundColor: "rgba(0, 0, 0, 0)",
       borderRadius: 20,
       alignItems: "center",
-      shadowColor: "#000",
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
       width: "100%",
-      height: "30%",
-      padding: 5,
+      height: "30%", 
     },
     button: {
       borderRadius: 20,
       padding: 10,
-      elevation: 2,
-      margin: 10,
+      margin: 12,
     },
     buttonOpen: {
       backgroundColor: "#F194FF",
@@ -115,7 +117,7 @@ export const styles = StyleSheet.create({
       textAlign: "center",
     },
     modalText: {
-      marginBottom: 15,
+      marginBottom: 13,
       width: "100%",
       textAlign: "center",
       backgroundColor: "gray",
