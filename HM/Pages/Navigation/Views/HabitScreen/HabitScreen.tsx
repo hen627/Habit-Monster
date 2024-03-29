@@ -5,43 +5,31 @@ import {
   TouchableOpacity,
   Button,
   Modal,
-  Alert,
   TextInput,
   FlatList,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import uuid from "react-native-uuid";
 import { styles, modalViewStyles } from "./styles";
+import { Weekdays, getCurrentDay, randomHexColor } from "../../../utils/utils";
 
-interface HomeScreenProps {
-  navigation: object;
+interface HabitData {
+  id: string;
+  taskName: string;
+  selectedDays: string[];
+  color: string;
 }
 
-const getCurrentDay = () => {
-  const today = new Date().getDay();
-  return today === 0 ? Weekdays[6].name : Weekdays[today - 1].name;
-};
-
-const Weekdays = [
-  { id: 1, name: "Monday" },
-  { id: 2, name: "Tuesday" },
-  { id: 3, name: "Wednesday" },
-  { id: 4, name: "Thursday" },
-  { id: 5, name: "Friday" },
-  { id: 6, name: "Saturday" },
-  { id: 7, name: "Sunday" },
-];
-
-const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+const HomeScreen: React.FC = ({}) => {
   const currentDay = getCurrentDay();
   const [modalVisible, setModalVisible] = React.useState(false);
   const [taskName, setTaskName] = React.useState("");
   const [dayList, setDayList] = React.useState(
     Weekdays.map((day) => ({ ...day, isSelected: false }))
   );
-  const [habits, setHabits] = React.useState<string[]>([]);
+  const [habits, setHabits] = React.useState([]);
 
-  const handlePress = (selectedID) => {
+  const handlePress = (selectedID: number) => {
     setDayList((prevList) =>
       prevList.map((day) =>
         day.id === selectedID ? { ...day, isSelected: !day.isSelected } : day
@@ -63,7 +51,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       id: uuid.v4(),
       taskName,
       selectedDays,
-      color: "#" + Math.floor(Math.random() * 16777215).toString(16),
+      color: randomHexColor(),
     };
 
     try {
@@ -83,7 +71,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       ];
 
       await AsyncStorage.setItem("habits", JSON.stringify(updatedHabits));
-      // console.log("Habits updated successfully:", updatedHabits);
 
       setHabits(updatedHabits.map((habit) => habit.taskName));
 
@@ -98,21 +85,21 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const fetchHabits = async () => {
     try {
       const savedHabitsString = await AsyncStorage.getItem("habits");
-      // console.log("Saved habits:", savedHabitsString);
 
       if (savedHabitsString !== null) {
         const savedHabits = JSON.parse(savedHabitsString);
 
         const selectedDaysForHabitData = {};
-        savedHabits.forEach((habit) => {
+        savedHabits.forEach((habit: HabitData) => {
           selectedDaysForHabitData[habit.taskName] = habit.selectedDays;
         });
         setSelectedDaysForHabit(selectedDaysForHabitData);
 
-        const habitNames = savedHabits.map((habit) => habit.taskName);
+        const habitNames = savedHabits.map(
+          (habit: HabitData) => habit.taskName
+        );
         setHabits(habitNames);
       } else {
-        // console.log("No habits found in AsyncStorage");
         setHabits([]);
       }
     } catch (error) {
@@ -136,7 +123,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           );
         }
       } catch (error) {
-        console.error("Error retrieving task and selected days:", error);
+        console.error("Error retreiving AsyncStorage:", error);
       }
     };
 
@@ -145,9 +132,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   }, []);
 
   const [selectedDaysForHabit, setSelectedDaysForHabit] = React.useState({});
-  const [checkedInDays, setCheckedInDays] = React.useState<{
-    [key: string]: string[];
-  }>({});
+  const [checkedInDays, setCheckedInDays] = React.useState({});
 
   const handleCheckIn = (habit: string, day: string) => {
     setCheckedInDays((prevCheckedInDays) => {
@@ -157,7 +142,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       } else {
         if (updatedCheckedInDays[habit].includes(day)) {
           updatedCheckedInDays[habit] = updatedCheckedInDays[habit].filter(
-            (d) => d !== day
+            (d: string) => d !== day
           );
         } else {
           updatedCheckedInDays[habit] = [...updatedCheckedInDays[habit], day];
@@ -167,7 +152,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     });
   };
 
-  const handleRemoveHabit = async (habit) => {
+  const handleRemoveHabit = async (habit: string) => {
     try {
       const updatedHabits = [...habits];
       const habitIndex = updatedHabits.findIndex((h) => h === habit);
@@ -191,7 +176,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
           setModalVisible(false);
         }}
       >
@@ -206,7 +190,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 <TextInput
                   style={modalViewStyles.modalText}
                   onChangeText={setTaskName}
-                  placeholder="Enter task name"
+                  placeholder="Habit name"
                 />
               </View>
               <Text style={modalViewStyles.dueDays}>Due days: </Text>

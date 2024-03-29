@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
       backgroundColor: "black",
       padding: 10,
       width: "100%",
+      overflow: "scroll"
     },
     buttonView: {
       width: 30,
@@ -34,6 +35,7 @@ export const styles = StyleSheet.create({
     buttonsContainer: {
       flexDirection: "row",
       alignItems: "center",
+
     },
     dayButton: {
       padding: 5,
@@ -104,6 +106,7 @@ export const styles = StyleSheet.create({
       borderRadius: 20,
       padding: 10,
       margin: 12,
+
     },
     buttonOpen: {
       backgroundColor: "#F194FF",
@@ -119,6 +122,7 @@ export const styles = StyleSheet.create({
     modalText: {
       marginBottom: 13,
       width: "100%",
+      height: 40,
       textAlign: "center",
       backgroundColor: "gray",
       borderRadius: 4,
