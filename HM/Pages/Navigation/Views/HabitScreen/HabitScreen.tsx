@@ -98,11 +98,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const fetchHabits = async () => {
     try {
       const savedHabitsString = await AsyncStorage.getItem("habits");
-      // console.log("Saved habits from AsyncStorage:", savedHabitsString);
+      // console.log("Saved habits:", savedHabitsString);
 
       if (savedHabitsString !== null) {
         const savedHabits = JSON.parse(savedHabitsString);
-        // console.log("Parsed habits from AsyncStorage:", savedHabits);
 
         const selectedDaysForHabitData = {};
         savedHabits.forEach((habit) => {
@@ -248,7 +247,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         style={{
           fontSize: 26,
           fontWeight: "bold",
-          color: modalVisible ? "black" : "white", // Change color based on modal visibility
+          color: modalVisible ? "black" : "white",
         }}
       >
         Habits
