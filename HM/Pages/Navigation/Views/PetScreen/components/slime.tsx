@@ -10,15 +10,15 @@ interface SphereProps extends MeshProps {
 }
 
 export default function Slime(props: SphereProps) {
-  const meshRef = useRef<any>(null);
+  const meshRef = useRef(null);
   const [forward, setForward] = useState(true);
   const [jumping, setJumping] = useState(false);
   const baseScale = [1.2, 0.85, 1.2];
   const endScale = [1.2, 0.95, 1.2];
   let t = 0;
 
-  const initialPosition = useRef<[number, number, number]>(props.position);
-  const jumpDirection = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, 1));
+  const initialPosition = useRef(props.position);
+  const jumpDirection = useRef(new THREE.Vector3(0, 0, 1));
 
   const calculateJumpDirection = () => {
     const startPosition = meshRef.current.position.clone();

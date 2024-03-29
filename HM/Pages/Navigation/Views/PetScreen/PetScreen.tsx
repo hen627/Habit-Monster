@@ -18,7 +18,7 @@ export default function ThreeApp() {
         setHabits(savedHabits);
       }
     } catch (error) {
-      console.error("Error retrieving habits:", error);
+      console.error("Failed retreiving habits:", error);
     }
   };
 
