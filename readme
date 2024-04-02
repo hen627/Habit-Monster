@@ -1,2 +1,4 @@
 npm run start to start the server. 
 Obs, there are buggs running the project in the browser, it is functional on mobile devices though.
+
+If you are using browser view, when creating a task use the tab button to select the input field as the touchable does not work in browser view. It works in android.
