@@ -48,7 +48,7 @@ const HomeScreen: React.FC = ({}) => {
       .map((day) => day.name);
 
     const taskData = {
-      id: uuid.v4(),
+      key: uuid.v4(),
       taskName,
       selectedDays,
       color: randomHexColor(),
@@ -63,7 +63,7 @@ const HomeScreen: React.FC = ({}) => {
       const updatedHabits = [
         ...currentHabits,
         {
-          id: taskData.id,
+          key: taskData.key,
           taskName: taskData.taskName,
           selectedDays: taskData.selectedDays,
           color: taskData.color,
