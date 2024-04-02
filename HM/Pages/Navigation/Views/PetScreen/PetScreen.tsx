@@ -22,12 +22,6 @@ export default function ThreeApp() {
     }
   };
 
-  useEffect(() => {
-    fetchHabits();
-  }, []);
-
-  useEffect(() => {}, [habits]);
-
   useFocusEffect(
     React.useCallback(() => {
       fetchHabits();
